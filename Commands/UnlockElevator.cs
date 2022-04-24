@@ -27,7 +27,7 @@ namespace SmokyPlugin.Commands
                 }
                 var elevators = SmokyPlugin.Singleton.LockedElevators;
                 if(!elevators.ContainsValue(elevator)) {
-                    response = "Этот не уже заблокирован";
+                    response = "Этот лифт не заблокирован";
                     return false;
                 }
                 elevators.Remove(arguments.At(0).ToLower());
