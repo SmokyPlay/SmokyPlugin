@@ -51,7 +51,9 @@ namespace SmokyPlugin.Handlers
 
         public void OnRestartingRound() {
             var players = SmokyPlugin.Singleton.players;
+            var LockedElevators = SmokyPlugin.Singleton.LockedElevators;
             players.Clear();
+            LockedElevators.Clear();
         }
     }
 }

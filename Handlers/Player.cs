@@ -60,8 +60,16 @@ namespace SmokyPlugin.Handlers
             ev.Player.Broadcast(duration, message);
         }
 
-        public void onInteractingShootingTarget(InteractingShootingTargetEventArgs ev) {
+        public void OnInteractingShootingTarget(InteractingShootingTargetEventArgs ev) {
             if(ev.TargetButton == ShootingTargetButton.Remove) ev.IsAllowed = false;
+        }
+
+        public void OnInteractingElevator(InteractingElevatorEventArgs ev) {
+            if(SmokyPlugin.Singleton.LockedElevators.ContainsValue(ev.Lift.Type)) {
+                ev.IsAllowed = false;
+                var Config = SmokyPlugin.Singleton.Config;
+                ev.Player.ShowHint(Config.ElevatorLockedDownHint, Config.ElevatorLockedDownHintDuration);
+            }
         }
 
         public void OnLeft(LeftEventArgs ev) {

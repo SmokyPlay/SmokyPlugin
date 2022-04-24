@@ -21,6 +21,8 @@ namespace SmokyPlugin
 
         public Interfaces.RoundDuration RoundDuration = new Structures.RoundDuration();
 
+        public Dictionary<string, ElevatorType> LockedElevators = new Dictionary<string, ElevatorType>();
+
         public override void OnEnabled() {
             Singleton = this;
             RegisterEvents();
@@ -41,7 +43,8 @@ namespace SmokyPlugin
             EServer.RestartingRound += server.OnRestartingRound;
 
             EPlayer.Verified += player.OnVerified;
-            EPlayer.InteractingShootingTarget += player.onInteractingShootingTarget;
+            EPlayer.InteractingShootingTarget += player.OnInteractingShootingTarget;
+            EPlayer.InteractingElevator += player.OnInteractingElevator;
             EPlayer.Left += player.OnLeft;
         }
 
@@ -53,7 +56,8 @@ namespace SmokyPlugin
             EServer.RestartingRound -= server.OnRestartingRound;
 
             EPlayer.Verified -= player.OnVerified;
-            EPlayer.InteractingShootingTarget -= player.onInteractingShootingTarget;
+            EPlayer.InteractingShootingTarget -= player.OnInteractingShootingTarget;
+            EPlayer.InteractingElevator -= player.OnInteractingElevator;
             EPlayer.Left -= player.OnLeft;
         }
 
