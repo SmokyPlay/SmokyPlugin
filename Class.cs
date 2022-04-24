@@ -41,6 +41,7 @@ namespace SmokyPlugin
             EServer.RestartingRound += server.OnRestartingRound;
 
             EPlayer.Verified += player.OnVerified;
+            EPlayer.InteractingShootingTarget += player.onInteractingShootingTarget;
             EPlayer.Left += player.OnLeft;
         }
 
@@ -52,6 +53,7 @@ namespace SmokyPlugin
             EServer.RestartingRound -= server.OnRestartingRound;
 
             EPlayer.Verified -= player.OnVerified;
+            EPlayer.InteractingShootingTarget -= player.onInteractingShootingTarget;
             EPlayer.Left -= player.OnLeft;
         }
 

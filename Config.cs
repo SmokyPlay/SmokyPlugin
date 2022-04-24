@@ -10,7 +10,7 @@ namespace SmokyPlugin
         [Description("Сообщение, которое отправляется вошедшим на сервер игрокам")]
         public string JoinMessage { get; private set; } = "Добро пожаловать!";
 
-        [Description("Длительность сообщения вошедшим игроам")]
+        [Description("Длительность сообщения вошедшим игрокам")]
         public ushort JoinMessageDuration { get; private set; } = 10;
 
 
@@ -28,5 +28,14 @@ namespace SmokyPlugin
         public string RoundEndBroadcast { get; private set; } = "Раунд завершен!";
         [Description("Длительность сообщения")]
         public ushort RoundEndBroadcastDuration { get; private set; } = 10;
+
+        [Description("Таймер запуска раунда в лобби - отсчет времени")]
+        public string LobbyTimerCountdown { get; private set; } = "Раунд начнется через {time} секунд";
+        [Description("Таймер запуска раунда в лобби - запуск приостановлен")]
+        public string LobbyTimerRoundPaused { get; private set; } = "Запуск раунда приостановлен";
+        [Description("Таймер запуска раунда в лобби - раунд начинается")]
+        public string LobbyTimerRoundStarting { get; private set; } = "Раунд начинается!";
+        [Description("Таймер запуска раунда в лобби - подключилось игроков")]
+        public string LobbyTimerPlayersConnected { get; private set; } = "{players} игроков подключилось";
     }
 }

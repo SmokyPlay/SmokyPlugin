@@ -1,24 +1,43 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Text;
+using Random = System.Random;
 
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
-using IEnumerator = System.Collections.Generic.IEnumerator<float>;
+using Exiled.API.Enums;
 using MEC;
 
 namespace SmokyPlugin.Handlers
 {
     public class PlayerHandler
     {
+        private ItemType[] Guns = {
+            ItemType.GunCOM15,
+            ItemType.GunCOM18,
+            ItemType.GunFSP9,
+            ItemType.GunCrossvec,
+            ItemType.GunE11SR,
+            ItemType.GunAK,
+            ItemType.GunShotgun,
+            ItemType.GunRevolver,
+            ItemType.GunLogicer
+        };
+
+        private AmmoType[] Ammo = {
+            AmmoType.Nato9,
+            AmmoType.Nato556,
+            AmmoType.Nato762,
+            AmmoType.Ammo12Gauge,
+            AmmoType.Ammo44Cal
+        };
+
         public void OnVerified(VerifiedEventArgs ev) {
             var players = SmokyPlugin.Singleton.players;
+            if(!Round.IsStarted && !Round.IsEnded) {
+                Timing.CallDelayed(1, () => SpawnTutorial(ev.Player));
+            }
             if(!players.ContainsKey(ev.Player.UserId)) {
                 Random random = new Random();
                 int randClass = random.Next(1, 9);
                 players.Add(ev.Player.UserId, true);
-                Log.Info("Проверка");
                 if(((Round.ElapsedTime.TotalSeconds - SmokyPlugin.Singleton.RoundDuration.ElapsedTime) < 120) &&
                     (Round.ElapsedTime.TotalSeconds >= Server.LaterJoinTime)) {
                     switch(SmokyPlugin.Singleton.RoundDuration.CurrentUnit) {
@@ -41,7 +60,24 @@ namespace SmokyPlugin.Handlers
             ev.Player.Broadcast(duration, message);
         }
 
+        public void onInteractingShootingTarget(InteractingShootingTargetEventArgs ev) {
+            if(ev.TargetButton == ShootingTargetButton.Remove) ev.IsAllowed = false;
+        }
+
         public void OnLeft(LeftEventArgs ev) {
+        }
+
+        private void SpawnTutorial(Player player) {
+            player.SetRole(RoleType.Tutorial);
+            player.AddItem(ItemType.ArmorHeavy);
+            player.AddItem(ItemType.ParticleDisruptor);
+            player.AddItem(Guns.RandomItem());
+            foreach (AmmoType ammo in Ammo)
+            {
+                if(ammo == AmmoType.Ammo12Gauge) player.SetAmmo(ammo, 74);
+                else if(ammo == AmmoType.Ammo44Cal) player.SetAmmo(ammo, 68);
+                else player.SetAmmo(ammo, 200);
+            }
         }
     }
 }
