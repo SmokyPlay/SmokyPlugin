@@ -12,7 +12,7 @@ namespace SmokyPlugin.Commands
         [CommandHandler(typeof(RemoteAdminCommandHandler))]
         public class LockElevatorCommand : ICommand {
             public string Command { get; } = "lock_elevator";
-            public string[] Aliases { get; } = {"elock", "lock_elevator"};
+            public string[] Aliases { get; } = {"elock"};
             public string Description { get; } = "Заблокировать указанный лифт";
             public string[] Usage = {"lcza/lczb/nuke/scp049/gatea/gateb"};
             public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response) {

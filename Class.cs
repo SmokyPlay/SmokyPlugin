@@ -7,6 +7,7 @@ using Exiled.API.Enums;
 
 using EServer = Exiled.Events.Handlers.Server;
 using EPlayer = Exiled.Events.Handlers.Player;
+using EWarhead = Exiled.Events.Handlers.Warhead;
 
 namespace SmokyPlugin
 {
@@ -16,12 +17,15 @@ namespace SmokyPlugin
         public static SmokyPlugin Singleton;
         private Handlers.ServerHandler server;
         private Handlers.PlayerHandler player;
+        private Handlers.WarheadHandler warhead;
 
         public Dictionary<string, bool> players = new Dictionary<string, bool>();
 
         public Interfaces.RoundDuration RoundDuration = new Structures.RoundDuration();
 
         public Dictionary<string, ElevatorType> LockedElevators = new Dictionary<string, ElevatorType>();
+
+        public bool WarheadLocked = false;
 
         public override void OnEnabled() {
             Singleton = this;
@@ -35,6 +39,7 @@ namespace SmokyPlugin
         public void RegisterEvents() {
             player = new Handlers.PlayerHandler();
             server = new Handlers.ServerHandler();
+            warhead = new Handlers.WarheadHandler();
 
             EServer.WaitingForPlayers += server.OnWaitingForPlayers;
             EServer.RoundStarted += server.OnRoundStarted;
@@ -44,8 +49,11 @@ namespace SmokyPlugin
 
             EPlayer.Verified += player.OnVerified;
             EPlayer.InteractingShootingTarget += player.OnInteractingShootingTarget;
+            EPlayer.TriggeringTesla += player.OnTriggeringTesla;
             EPlayer.InteractingElevator += player.OnInteractingElevator;
             EPlayer.Left += player.OnLeft;
+
+            EWarhead.Stopping += warhead.OnStopping;
         }
 
         public void UnregisterEvents() {
@@ -57,8 +65,11 @@ namespace SmokyPlugin
 
             EPlayer.Verified -= player.OnVerified;
             EPlayer.InteractingShootingTarget -= player.OnInteractingShootingTarget;
+            EPlayer.TriggeringTesla -= player.OnTriggeringTesla;
             EPlayer.InteractingElevator -= player.OnInteractingElevator;
             EPlayer.Left -= player.OnLeft;
+
+            EWarhead.Stopping -= warhead.OnStopping;
         }
 
         public void CheckEmptyTimer(ushort interval) {

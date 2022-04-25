@@ -10,6 +10,10 @@ namespace SmokyPlugin.Handlers
     public class ServerHandler
     {
         private CoroutineHandle lobbyTimer;
+        
+        public CoroutineHandle AutoWarheadBefore;
+        private CoroutineHandle AutoWarhead;
+
         public void OnWaitingForPlayers() {
             if(SmokyPlugin.Singleton.Config.RestartEmpty) SmokyPlugin.Singleton.CheckEmptyTimer(SmokyPlugin.Singleton.Config.RestartEmptyInterval);
             var RoundDuration = SmokyPlugin.Singleton.RoundDuration;
@@ -28,6 +32,8 @@ namespace SmokyPlugin.Handlers
         public void OnRoundStarted() {
             Server.FriendlyFire = false;
             Timing.KillCoroutines(lobbyTimer);
+
+            AutoWarhead = Timing.RunCoroutine(Methods.AutoWarhead());
         }
 
         public void OnRespawningTeam(RespawningTeamEventArgs ev) {
@@ -54,6 +60,7 @@ namespace SmokyPlugin.Handlers
             var LockedElevators = SmokyPlugin.Singleton.LockedElevators;
             players.Clear();
             LockedElevators.Clear();
+            Timing.KillCoroutines(AutoWarhead);
         }
     }
 }

@@ -64,6 +64,10 @@ namespace SmokyPlugin.Handlers
             if(ev.TargetButton == ShootingTargetButton.Remove) ev.IsAllowed = false;
         }
 
+        public void OnTriggeringTesla(TriggeringTeslaEventArgs ev) {
+            if(TeslaWhitelist.Contains(ev.Player.Role)) ev.IsTriggerable = false;
+        }
+
         public void OnInteractingElevator(InteractingElevatorEventArgs ev) {
             if(SmokyPlugin.Singleton.LockedElevators.ContainsValue(ev.Lift.Type)) {
                 ev.IsAllowed = false;
@@ -87,5 +91,14 @@ namespace SmokyPlugin.Handlers
                 else player.SetAmmo(ammo, 200);
             }
         }
+
+        private RoleType[] TeslaWhitelist = {
+            RoleType.Scientist,
+            RoleType.FacilityGuard,
+            RoleType.NtfPrivate,
+            RoleType.NtfSpecialist,
+            RoleType.NtfSergeant,
+            RoleType.NtfCaptain
+        };
     }
 }

@@ -42,5 +42,20 @@ namespace SmokyPlugin
         public string ElevatorLockedDownHint { get; private set; } = "Лифт заблокирован";
         [Description("Длительность сообщения")]
         public ushort ElevatorLockedDownHintDuration { get; private set; } = 5;
+
+        [Description("Через сколько секунд после начала раунда автоматически активировать боеголовку")]
+        public ushort AutoWarheadTime { get; private set; } = 1200;
+        [Description("Сообщение, которое отправляется до начала детонации боеголовки")]
+        public string AutoWarheadMessageBeforeDetonation { get; private set; } = "Альфа боеголовка будет запущена автоматически через {time} секунд";
+        [Description("За сколько секунд до детонации отправлять сообщение")]
+        public ushort AutoWarheadMessageBeforeDetonationTime { get; private set; } = 30;
+        [Description("Сообщение о начале детонации боеголовки")]
+        public string AutoWarheadDetonationMessage { get; private set; } = "Альфа боеголовка запущена автоматически. Детонация необратима";
+        [Description("Длительность сообщения")]
+        public ushort AutoWarheadDetonationMessageDuration { get; private set; } = 10;
+        [Description("Сообщение, которое увидит игрок, если попробует вызвать заблокированный лифт")]
+        public string WarheadLockedHint { get; private set; } = "Боеголовка заблокирована";
+        [Description("Длительность сообщения")]
+        public ushort WarheadLockedHintDuration { get; private set; } = 5;
     }
 }
