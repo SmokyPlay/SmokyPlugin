@@ -53,9 +53,14 @@ namespace SmokyPlugin
         public string AutoWarheadDetonationMessage { get; private set; } = "Альфа боеголовка запущена автоматически. Детонация необратима";
         [Description("Длительность сообщения")]
         public ushort AutoWarheadDetonationMessageDuration { get; private set; } = 10;
-        [Description("Сообщение, которое увидит игрок, если попробует вызвать заблокированный лифт")]
+        [Description("Сообщение, которое увидит игрок, если попробует отключить заблокированную боеголовку")]
         public string WarheadLockedHint { get; private set; } = "Боеголовка заблокирована";
         [Description("Длительность сообщения")]
         public ushort WarheadLockedHintDuration { get; private set; } = 5;
+
+        [Description("Сообщение всем игрокам во время блокировки лобби для проведения ивента")]
+        public string EventLockMessage { get; private set; } = "В этом раунде проводится ивент. Послушайте его правила";
+        [Description("Длительность сообщения")]
+        public ushort EventLockMessageDuration { get; private set; } = 10;
     }
 }

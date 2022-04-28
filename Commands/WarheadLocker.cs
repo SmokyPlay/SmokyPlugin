@@ -13,7 +13,7 @@ namespace SmokyPlugin.Commands
         public class WarheadLocker : ICommand {
             public string Command { get; } = "warhead_locker";
             public string[] Aliases { get; } = {"wl", "nl"};
-            public string Description { get; } = "Заблокировать указанный лифт";
+            public string Description { get; } = "Заблокировать или разблокировать кнопку отключения боеголовки";
             public string[] Usage = {"lock/unlock"};
             public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response) {
                 Player player = Player.Get(sender);

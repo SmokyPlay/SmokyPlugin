@@ -80,15 +80,23 @@ namespace SmokyPlugin.Handlers
         }
 
         private void SpawnTutorial(Player player) {
+            var Config = SmokyPlugin.Singleton.Config;
             player.SetRole(RoleType.Tutorial);
-            player.AddItem(ItemType.ArmorHeavy);
-            player.AddItem(ItemType.ParticleDisruptor);
-            player.AddItem(Guns.RandomItem());
-            foreach (AmmoType ammo in Ammo)
-            {
-                if(ammo == AmmoType.Ammo12Gauge) player.SetAmmo(ammo, 74);
-                else if(ammo == AmmoType.Ammo44Cal) player.SetAmmo(ammo, 68);
-                else player.SetAmmo(ammo, 200);
+            if(!SmokyPlugin.Singleton.EventLockdown) {
+                player.AddItem(ItemType.SCP1853);
+                player.AddItem(ItemType.ArmorHeavy);
+                player.AddItem(ItemType.ParticleDisruptor);
+                player.AddItem(Guns.RandomItem());
+                foreach (AmmoType ammo in Ammo)
+                {
+                    if(ammo == AmmoType.Ammo12Gauge) player.SetAmmo(ammo, 74);
+                    else if(ammo == AmmoType.Ammo44Cal) player.SetAmmo(ammo, 68);
+                    else player.SetAmmo(ammo, 200);
+                }
+            }
+            else {
+                player.IsMuted = true;
+                player.Broadcast(Config.EventLockMessageDuration, Config.EventLockMessage);
             }
         }
 

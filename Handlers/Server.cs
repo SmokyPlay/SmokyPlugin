@@ -61,6 +61,8 @@ namespace SmokyPlugin.Handlers
             players.Clear();
             LockedElevators.Clear();
             Timing.KillCoroutines(AutoWarhead);
+            SmokyPlugin.Singleton.WarheadLocked = false;
+            SmokyPlugin.Singleton.EventLockdown = false;
         }
     }
 }

@@ -27,6 +27,8 @@ namespace SmokyPlugin
 
         public bool WarheadLocked = false;
 
+        public bool EventLockdown = false;
+
         public override void OnEnabled() {
             Singleton = this;
             RegisterEvents();

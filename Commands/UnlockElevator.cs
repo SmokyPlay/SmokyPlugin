@@ -14,18 +14,27 @@ namespace SmokyPlugin.Commands
             public string Command { get; } = "unlock_elevator";
             public string[] Aliases { get; } = {"eunlock"};
             public string Description { get; } = "Разблокировать указанный лифт";
-            public string[] Usage = {"lcza/lczb/nuke/scp049/gatea/gateb"};
+            public string[] Usage = {"lcza/lczb/nuke/scp049/gatea/gateb/all"};
             public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response) {
                 Player player = Player.Get(sender);
                 if(!player.CheckPermission("sp.elevators")) {
                     response = "У вас недостаточно прав для использования этой команды";
                     return false;
                 }
+                if(arguments.Count < 1) {
+                    response = "Укажите название лифта";
+                    return false;
+                }
+                var elevators = SmokyPlugin.Singleton.LockedElevators;
+                if(arguments.At(0).ToLower() == "all") {
+                    elevators.Clear();
+                    response = "Все лифты успешно разблокированы";
+                    return true;
+                }
                 if(!ElevatorList.TryGetValue(arguments.At(0).ToLower(), out ElevatorType elevator)) {
                     response = "Лифт не найден";
                     return false;
                 }
-                var elevators = SmokyPlugin.Singleton.LockedElevators;
                 if(!elevators.ContainsValue(elevator)) {
                     response = "Этот лифт не заблокирован";
                     return false;
