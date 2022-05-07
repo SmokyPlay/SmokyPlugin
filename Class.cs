@@ -53,6 +53,7 @@ namespace SmokyPlugin
             EPlayer.InteractingShootingTarget += player.OnInteractingShootingTarget;
             EPlayer.TriggeringTesla += player.OnTriggeringTesla;
             EPlayer.InteractingElevator += player.OnInteractingElevator;
+            EPlayer.PickingUpScp330 += player.OnPickingUpScp330;
             EPlayer.Left += player.OnLeft;
 
             EWarhead.Stopping += warhead.OnStopping;
@@ -69,6 +70,7 @@ namespace SmokyPlugin
             EPlayer.InteractingShootingTarget -= player.OnInteractingShootingTarget;
             EPlayer.TriggeringTesla -= player.OnTriggeringTesla;
             EPlayer.InteractingElevator -= player.OnInteractingElevator;
+            EPlayer.PickingUpScp330 -= player.OnPickingUpScp330;
             EPlayer.Left -= player.OnLeft;
 
             EWarhead.Stopping -= warhead.OnStopping;

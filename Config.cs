@@ -6,6 +6,11 @@ namespace SmokyPlugin
         [Description("Включен плагин или нет")]
         public bool IsEnabled { get; set; } = true;
 
+        [Description("Адрес API сервера")]
+        public string ApiUrl { get; private set; } = "http://localhost:8560";
+        [Description("API токен")]
+        public string ApiToken { get; private set; } = "XXXXXXXX";
+
 
         [Description("Сообщение, которое отправляется вошедшим на сервер игрокам")]
         public string JoinMessage { get; private set; } = "Добро пожаловать!";

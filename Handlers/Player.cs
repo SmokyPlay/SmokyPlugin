@@ -1,8 +1,10 @@
 using Random = System.Random;
 
 using Exiled.API.Features;
+using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
 using Exiled.API.Enums;
+using InventorySystem;
 using MEC;
 
 namespace SmokyPlugin.Handlers
@@ -73,6 +75,14 @@ namespace SmokyPlugin.Handlers
                 ev.IsAllowed = false;
                 var Config = SmokyPlugin.Singleton.Config;
                 ev.Player.ShowHint(Config.ElevatorLockedDownHint, Config.ElevatorLockedDownHintDuration);
+            }
+        }
+
+        public void OnPickingUpScp330(PickingUpScp330EventArgs ev) {
+            Random random = new Random();
+            if(random.Next(1, 11) <= 2) {
+                ev.IsAllowed = false;
+                ev.Player.TryAddCandy(InventorySystem.Items.Usables.Scp330.CandyKindID.Pink);
             }
         }
 

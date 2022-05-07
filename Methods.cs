@@ -32,22 +32,22 @@ namespace SmokyPlugin
             }
         }
 
-        public static IEnumerator<float> AutoWarhead() {
+        public static IEnumerator<float> AutoWarheadMessage() {
             var Config = SmokyPlugin.Singleton.Config;
-            ushort seconds = Config.AutoWarheadTime;
-            ushort SecondsBefore = Config.AutoWarheadMessageBeforeDetonationTime;
+            ushort seconds = Config.AutoWarheadMessageBeforeDetonationTime;
             while(seconds > 0) {
-                if((seconds <= SecondsBefore) && !Warhead.IsInProgress) {
-                    var broadcast = new Broadcast();
-                    Map.Broadcast(1, Config.AutoWarheadMessageBeforeDetonation.Replace("{time}", seconds.ToString()));
-                }
+                var broadcast = new Broadcast();
+                Map.Broadcast(1, Config.AutoWarheadMessageBeforeDetonation.Replace("{time}", seconds.ToString()));
                 seconds--;
                 yield return Timing.WaitForSeconds(1);
             }
+        }
+
+        public static void AutoWarhead() {
+            var Config = SmokyPlugin.Singleton.Config;
             SmokyPlugin.Singleton.WarheadLocked = true;
             if(!Warhead.IsInProgress) Warhead.Start();
             Map.Broadcast(Config.AutoWarheadDetonationMessageDuration, Config.AutoWarheadDetonationMessage);
-            yield return Timing.WaitForSeconds(1);
         }
     }
 }

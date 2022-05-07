@@ -12,6 +12,8 @@ namespace SmokyPlugin.Handlers
         private CoroutineHandle lobbyTimer;
         
         public CoroutineHandle AutoWarheadBefore;
+        private CoroutineHandle AutoWarheadMessageCoroutine;
+        private CoroutineHandle AutoWarheadMessage;
         private CoroutineHandle AutoWarhead;
 
         public void OnWaitingForPlayers() {
@@ -30,10 +32,11 @@ namespace SmokyPlugin.Handlers
         }
 
         public void OnRoundStarted() {
+            var Config = SmokyPlugin.Singleton.Config;
             Server.FriendlyFire = false;
             Timing.KillCoroutines(lobbyTimer);
 
-            AutoWarhead = Timing.RunCoroutine(Methods.AutoWarhead());
+            if((Config.AutoWarheadTime - Config.AutoWarheadMessageBeforeDetonationTime) >= 0) this.AutoWarheadTimer();
         }
 
         public void OnRespawningTeam(RespawningTeamEventArgs ev) {
@@ -60,9 +63,20 @@ namespace SmokyPlugin.Handlers
             var LockedElevators = SmokyPlugin.Singleton.LockedElevators;
             players.Clear();
             LockedElevators.Clear();
-            Timing.KillCoroutines(AutoWarhead);
+            Timing.KillCoroutines(AutoWarheadMessage, AutoWarheadMessageCoroutine, AutoWarhead);
             SmokyPlugin.Singleton.WarheadLocked = false;
             SmokyPlugin.Singleton.EventLockdown = false;
+        }
+
+        private void AutoWarheadTimer() {
+            var Config = SmokyPlugin.Singleton.Config;
+            AutoWarheadMessage = Timing.CallDelayed(Config.AutoWarheadTime - Config.AutoWarheadMessageBeforeDetonationTime, () => {
+                AutoWarheadMessageCoroutine = Timing.RunCoroutine(Methods.AutoWarheadMessage());
+            });
+            AutoWarhead = Timing.CallDelayed(Config.AutoWarheadTime, () => {
+                Timing.KillCoroutines(AutoWarheadMessage, AutoWarheadMessageCoroutine);
+                Methods.AutoWarhead();
+            });
         }
     }
 }
