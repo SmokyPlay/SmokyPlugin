@@ -29,7 +29,7 @@ namespace SmokyPlugin.Commands
                 if(arguments.At(0).ToLower() == "all") {
                     foreach (KeyValuePair<string, ElevatorType> elev in ElevatorList)
                     {
-                        if(!elevators.ContainsValue(elev.Value)) elevators.Add(elev.Key, elev.Value);
+                        if(!elevators.Contains(elev.Value)) elevators.Add(elev.Value);
                     }
                     response = "Все лифты успешно заблокированы";
                     return true;
@@ -38,11 +38,11 @@ namespace SmokyPlugin.Commands
                     response = "Лифт не найден";
                     return false;
                 }
-                if(elevators.ContainsValue(elevator)) {
+                if(elevators.Contains(elevator)) {
                     response = "Этот лифт уже заблокирован";
                     return false;
                 }
-                elevators.Add(arguments.At(0), elevator);
+                elevators.Add(elevator);
                 response = $"Лифт {elevator} заблокирован";
                 return true;   
             }

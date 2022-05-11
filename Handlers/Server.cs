@@ -10,11 +10,6 @@ namespace SmokyPlugin.Handlers
     public class ServerHandler
     {
         private CoroutineHandle lobbyTimer;
-        
-        public CoroutineHandle AutoWarheadBefore;
-        private CoroutineHandle AutoWarheadMessageCoroutine;
-        private CoroutineHandle AutoWarheadMessage;
-        private CoroutineHandle AutoWarhead;
 
         public void OnWaitingForPlayers() {
             if(SmokyPlugin.Singleton.Config.RestartEmpty) SmokyPlugin.Singleton.CheckEmptyTimer(SmokyPlugin.Singleton.Config.RestartEmptyInterval);
@@ -36,10 +31,21 @@ namespace SmokyPlugin.Handlers
             Server.FriendlyFire = false;
             Timing.KillCoroutines(lobbyTimer);
 
-            if((Config.AutoWarheadTime - Config.AutoWarheadMessageBeforeDetonationTime) >= 0) this.AutoWarheadTimer();
+            if(SmokyPlugin.Singleton.AutoEvent) {
+                SmokyPlugin.Singleton.AutoEvents.TryGetValue(SmokyPlugin.Singleton.AutoEventType, out Structures.AutoEvent AutoEvent);
+                AutoEvent.OnRoundStarted();
+            }
+
+            if(((Config.AutoWarheadTime - Config.AutoWarheadMessageBeforeDetonationTime) >= 0) && 
+            SmokyPlugin.Singleton.AutoWarheadEnabled) AutoWarhead.Enable();
         }
 
         public void OnRespawningTeam(RespawningTeamEventArgs ev) {
+            if(SmokyPlugin.Singleton.AutoEvent) {
+                SmokyPlugin.Singleton.AutoEvents.TryGetValue(SmokyPlugin.Singleton.AutoEventType, out Structures.AutoEvent AutoEvent);
+                if(!AutoEvent.AllowTeamsRespawn) ev.IsAllowed = false;
+                return;
+            }
             var RoundDuration = SmokyPlugin.Singleton.RoundDuration;
             switch(ev.NextKnownTeam) {
                 case Respawning.SpawnableTeamType.NineTailedFox:
@@ -63,20 +69,16 @@ namespace SmokyPlugin.Handlers
             var LockedElevators = SmokyPlugin.Singleton.LockedElevators;
             players.Clear();
             LockedElevators.Clear();
-            Timing.KillCoroutines(AutoWarheadMessage, AutoWarheadMessageCoroutine, AutoWarhead);
             SmokyPlugin.Singleton.WarheadLocked = false;
             SmokyPlugin.Singleton.EventLockdown = false;
-        }
-
-        private void AutoWarheadTimer() {
-            var Config = SmokyPlugin.Singleton.Config;
-            AutoWarheadMessage = Timing.CallDelayed(Config.AutoWarheadTime - Config.AutoWarheadMessageBeforeDetonationTime, () => {
-                AutoWarheadMessageCoroutine = Timing.RunCoroutine(Methods.AutoWarheadMessage());
-            });
-            AutoWarhead = Timing.CallDelayed(Config.AutoWarheadTime, () => {
-                Timing.KillCoroutines(AutoWarheadMessage, AutoWarheadMessageCoroutine);
-                Methods.AutoWarhead();
-            });
+            SmokyPlugin.Singleton.AutoWarheadEnabled = true;
+            AutoWarhead.Disable();
+            if(SmokyPlugin.Singleton.AutoEvent) {
+                SmokyPlugin.Singleton.AutoEvents.TryGetValue(SmokyPlugin.Singleton.AutoEventType, out Structures.AutoEvent AutoEvent);
+                AutoEvent.OnRestartingRound();
+            }
+            SmokyPlugin.Singleton.AutoEvent = false;
+            SmokyPlugin.Singleton.AutoEventType = "";
         }
     }
 }

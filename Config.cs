@@ -42,6 +42,8 @@ namespace SmokyPlugin
         public string LobbyTimerRoundStarting { get; private set; } = "Раунд начинается!";
         [Description("Таймер запуска раунда в лобби - подключилось игроков")]
         public string LobbyTimerPlayersConnected { get; private set; } = "{players} игроков подключилось";
+        [Description("Таймер запуска раунда в лобби - автоматический ивент")]
+        public string LobbyTimerAutoEvent { get; private set; } = "В этом раунде автоматически проводится ивент {event}";
 
         [Description("Сообщение, которое увидит игрок, если попробует вызвать заблокированный лифт")]
         public string ElevatorLockedDownHint { get; private set; } = "Лифт заблокирован";

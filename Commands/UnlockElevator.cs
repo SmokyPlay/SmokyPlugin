@@ -35,11 +35,11 @@ namespace SmokyPlugin.Commands
                     response = "Лифт не найден";
                     return false;
                 }
-                if(!elevators.ContainsValue(elevator)) {
+                if(!elevators.Contains(elevator)) {
                     response = "Этот лифт не заблокирован";
                     return false;
                 }
-                elevators.Remove(arguments.At(0).ToLower());
+                elevators.Remove(elevator);
                 response = $"Лифт {elevator} разблокирован";
                 return true;   
             }

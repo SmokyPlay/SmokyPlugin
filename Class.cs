@@ -1,6 +1,7 @@
 using System;
 using System.Timers;
 using System.Collections.Generic;
+using MEC;
 
 using Exiled.API.Features;
 using Exiled.API.Enums;
@@ -19,23 +20,31 @@ namespace SmokyPlugin
         private Handlers.PlayerHandler player;
         private Handlers.WarheadHandler warhead;
 
-        public Dictionary<string, bool> players = new Dictionary<string, bool>();
+        public List<string> players = new List<string>();
 
-        public Interfaces.RoundDuration RoundDuration = new Structures.RoundDuration();
+        public Structures.RoundDuration RoundDuration = new Structures.RoundDuration();
 
-        public Dictionary<string, ElevatorType> LockedElevators = new Dictionary<string, ElevatorType>();
+        public List<ElevatorType> LockedElevators = new List<ElevatorType>();
 
         public bool WarheadLocked = false;
 
         public bool EventLockdown = false;
 
+        public bool AutoEvent = false;
+        public string AutoEventType = "";
+        public Dictionary<string, Structures.AutoEvent> AutoEvents = new Dictionary<string, Structures.AutoEvent>();
+
+        public bool AutoWarheadEnabled = true;
+
         public override void OnEnabled() {
             Singleton = this;
             RegisterEvents();
+            RegisterAutoEvents();
         }
 
         public override void OnDisabled() {
             UnregisterEvents();
+            UnregisterAutoEvents();
         }
 
         public void RegisterEvents() {
@@ -54,6 +63,8 @@ namespace SmokyPlugin
             EPlayer.TriggeringTesla += player.OnTriggeringTesla;
             EPlayer.InteractingElevator += player.OnInteractingElevator;
             EPlayer.PickingUpScp330 += player.OnPickingUpScp330;
+            EPlayer.Escaping += player.OnEscaping;
+            EPlayer.Died += player.OnDied;
             EPlayer.Left += player.OnLeft;
 
             EWarhead.Stopping += warhead.OnStopping;
@@ -71,9 +82,22 @@ namespace SmokyPlugin
             EPlayer.TriggeringTesla -= player.OnTriggeringTesla;
             EPlayer.InteractingElevator -= player.OnInteractingElevator;
             EPlayer.PickingUpScp330 -= player.OnPickingUpScp330;
+            EPlayer.Escaping -= player.OnEscaping;
+            EPlayer.Died -= player.OnDied;
             EPlayer.Left -= player.OnLeft;
 
             EWarhead.Stopping -= warhead.OnStopping;
+        }
+
+        private void RegisterAutoEvents() {
+            AutoEvents.Add("blackout", new AutoEvents.BlackoutAutoEvent());
+            AutoEvents.Add("elevatormalfunction", new AutoEvents.ElevatorMalfunctionAutoEvent());
+            AutoEvents.Add("scp173infection", new AutoEvents.SCP173InfectionAutoEvent());
+            AutoEvents.Add("hideandseek", new AutoEvents.HideAndSeekAutoEvent());
+        }
+
+        private void UnregisterAutoEvents() {
+            AutoEvents.Clear();
         }
 
         public void CheckEmptyTimer(ushort interval) {

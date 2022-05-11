@@ -14,14 +14,13 @@ namespace SmokyPlugin.Commands
             public string Command { get; } = "event_lockdown";
             public string[] Aliases { get; } = {"eventlock", "evlock"};
             public string Description { get; } = "Замутить всех игроков в лобби и очистить их инвентарь для объяснения правил ивента";
-            public string[] Usage = {"lcza/lczb/nuke/scp049/gatea/gateb/all"};
+            public string[] Usage = {};
             public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response) {
                 Player player = Player.Get(sender);
-                if(!player.CheckPermission("sp.eventlockdown")) {
+                if(!player.CheckPermission("sp.events")) {
                     response = "У вас недостаточно прав для использования этой команды";
                     return false;
                 }
-                var elevators = SmokyPlugin.Singleton.LockedElevators;
                 var Config = SmokyPlugin.Singleton.Config;
                 var EventLockdown = SmokyPlugin.Singleton.EventLockdown;
                 if(!Round.IsLobby) {

@@ -11,36 +11,22 @@ namespace SmokyPlugin.Handlers
 {
     public class PlayerHandler
     {
-        private ItemType[] Guns = {
-            ItemType.GunCOM15,
-            ItemType.GunCOM18,
-            ItemType.GunFSP9,
-            ItemType.GunCrossvec,
-            ItemType.GunE11SR,
-            ItemType.GunAK,
-            ItemType.GunShotgun,
-            ItemType.GunRevolver,
-            ItemType.GunLogicer
-        };
-
-        private AmmoType[] Ammo = {
-            AmmoType.Nato9,
-            AmmoType.Nato556,
-            AmmoType.Nato762,
-            AmmoType.Ammo12Gauge,
-            AmmoType.Ammo44Cal
-        };
-
         public void OnVerified(VerifiedEventArgs ev) {
             var players = SmokyPlugin.Singleton.players;
-            if(!Round.IsStarted && !Round.IsEnded) {
-                Timing.CallDelayed(1, () => SpawnTutorial(ev.Player));
+            bool AllowLaterJoinSpawn = true;
+            if(SmokyPlugin.Singleton.AutoEvent) {
+                SmokyPlugin.Singleton.AutoEvents.TryGetValue(SmokyPlugin.Singleton.AutoEventType, out Structures.AutoEvent AutoEvent);
+                AutoEvent.OnVerified(ev);
+                AllowLaterJoinSpawn = AutoEvent.AllowLaterJoinSpawn;
             }
-            if(!players.ContainsKey(ev.Player.UserId)) {
+            if(!Round.IsStarted && !Round.IsEnded) {
+                Timing.CallDelayed(1, () => Methods.SpawnTutorial(ev.Player));
+            }
+            if(!players.Contains(ev.Player.UserId)) {
                 Random random = new Random();
                 int randClass = random.Next(1, 9);
-                players.Add(ev.Player.UserId, true);
-                if(((Round.ElapsedTime.TotalSeconds - SmokyPlugin.Singleton.RoundDuration.ElapsedTime) < 120) &&
+                players.Add(ev.Player.UserId);
+                if(AllowLaterJoinSpawn && ((Round.ElapsedTime.TotalSeconds - SmokyPlugin.Singleton.RoundDuration.ElapsedTime) < 120) &&
                     (Round.ElapsedTime.TotalSeconds >= Server.LaterJoinTime)) {
                     switch(SmokyPlugin.Singleton.RoundDuration.CurrentUnit) {
                         case "none":
@@ -71,7 +57,7 @@ namespace SmokyPlugin.Handlers
         }
 
         public void OnInteractingElevator(InteractingElevatorEventArgs ev) {
-            if(SmokyPlugin.Singleton.LockedElevators.ContainsValue(ev.Lift.Type)) {
+            if(SmokyPlugin.Singleton.LockedElevators.Contains(ev.Lift.Type)) {  
                 ev.IsAllowed = false;
                 var Config = SmokyPlugin.Singleton.Config;
                 ev.Player.ShowHint(Config.ElevatorLockedDownHint, Config.ElevatorLockedDownHintDuration);
@@ -86,27 +72,24 @@ namespace SmokyPlugin.Handlers
             }
         }
 
-        public void OnLeft(LeftEventArgs ev) {
+        public void OnEscaping(EscapingEventArgs ev) {
+            if(SmokyPlugin.Singleton.AutoEvent) {
+                SmokyPlugin.Singleton.AutoEvents.TryGetValue(SmokyPlugin.Singleton.AutoEventType, out Structures.AutoEvent AutoEvent);
+                AutoEvent.OnEscaping(ev);
+            }
         }
 
-        private void SpawnTutorial(Player player) {
-            var Config = SmokyPlugin.Singleton.Config;
-            player.SetRole(RoleType.Tutorial);
-            if(!SmokyPlugin.Singleton.EventLockdown) {
-                player.AddItem(ItemType.SCP1853);
-                player.AddItem(ItemType.ArmorHeavy);
-                player.AddItem(ItemType.ParticleDisruptor);
-                player.AddItem(Guns.RandomItem());
-                foreach (AmmoType ammo in Ammo)
-                {
-                    if(ammo == AmmoType.Ammo12Gauge) player.SetAmmo(ammo, 74);
-                    else if(ammo == AmmoType.Ammo44Cal) player.SetAmmo(ammo, 68);
-                    else player.SetAmmo(ammo, 200);
-                }
+        public void OnDied(DiedEventArgs ev) {
+            if(SmokyPlugin.Singleton.AutoEvent) {
+                SmokyPlugin.Singleton.AutoEvents.TryGetValue(SmokyPlugin.Singleton.AutoEventType, out Structures.AutoEvent AutoEvent);
+                AutoEvent.OnDied(ev);
             }
-            else {
-                player.IsMuted = true;
-                player.Broadcast(Config.EventLockMessageDuration, Config.EventLockMessage);
+        }
+
+        public void OnLeft(LeftEventArgs ev) {
+            if(SmokyPlugin.Singleton.AutoEvent) {
+                SmokyPlugin.Singleton.AutoEvents.TryGetValue(SmokyPlugin.Singleton.AutoEventType, out Structures.AutoEvent AutoEvent);
+                AutoEvent.OnLeft(ev);
             }
         }
 
